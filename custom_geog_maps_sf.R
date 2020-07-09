@@ -1,5 +1,6 @@
 library(tidyverse)
 library(sf)
+library(ggmap)
 
 ### Stage 01 - Collecting Geography Polygons ###
 
@@ -27,7 +28,7 @@ DataZone_sf <- sf::read_sf(file.path(temp_dir,'SG_DataZone_Bdry_2011.shp'))
 # Most importantly, it can be plotted easily at this stage using the plot() function
 
 # We will deminstrate this by filtering our dataframe of datazones for those that are within a certain council area
-Datazone_culter <- filter(DataZone_sf, as.character(Name) %like% 'Culter')
+Datazone_culter <- dplyr::filter(DataZone_sf, Name %like% 'Culter')
 
 # We then call plot and tell it to shade these polygons by a given column
 plot(Datazone_culter['ResPop2011'])
@@ -50,7 +51,6 @@ plot(Datazone_culter['TotPop2011'], pal=brewer.pal(7, "PuBu"))
 
 ### Stage 03 - Collecting Basemaps ###
 
-library(ggmap)
 # In order to bring in basemaps and pass sf objects to it, you will need a google maps Geocoding API and Static Maps API key
 # Guidance to obtaining this can be found at: https://cloud.google.com/docs/authentication/api-keys#securing_an_api_key
 # Once you have a key, add it to your r environ with register_google(key = 'your key')
