@@ -88,6 +88,8 @@ myMap <- get_map(location =  c(lon = -2.27, lat = 57.1), zoom = 11,
 ggmap(myMap) +
   geom_sf(data = Datazone_culter, aes(fill=as.factor(TotPop2011)), inherit.aes = FALSE) +
   scale_fill_brewer(palette = "OrRd") +
-  coord_sf(crs = st_crs(4326)) # This is essential to convert CRS to WGS84
+  coord_sf(crs = st_crs(4326)) + # This is essential to convert CRS to WGS84
+  labs(x = 'Longitude', y = 'Latitude', fill = 'Tot Pop 2011') + 
+  ggtitle('TotPop2011') 
 
 
