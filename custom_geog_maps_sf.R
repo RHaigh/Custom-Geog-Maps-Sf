@@ -1,8 +1,11 @@
 library(tidyverse)
 library(sf)
 library(ggmap)
+library(leaflet)
+library(data.table)
+library(RColorBrewer)
 
-### Stage 01 - Collecting Geography Polygons ###
+### Stage 01 - Collecting map geography polygons ###
 
 # You must now obtain a shapefile that contains the polygon shapes of your chosen geography .
 # For the purposes of this tutorial, we will be looking at the datazone level.
@@ -18,11 +21,11 @@ download.file(path, temp_shapefile)
 temp_dir <- tempdir()
 unzip(temp_shapefile, exdir = temp_dir) 
 
-### Stage 02 - Mapping Polygons ###
-
 # Using the sf package, we can read in this shapefile with read_sf()
 DataZone_sf <- sf::read_sf(file.path(temp_dir,'SG_DataZone_Bdry_2011.shp'))
 # Note that you must direct it to the layer within the geodatabase ending in .shp
+
+### Stage 02 - Mapping Polygons ###
 
 # Sf has several advantages over the rgdal approach also shown in this repository
 # Most importantly, it can be plotted easily at this stage using the plot() function
@@ -84,6 +87,8 @@ myMap <- get_map(location =  c(lon = -2.27, lat = 57.1), zoom = 11,
 
 ### Stage 04 - Mapping Polygons Over Basemap ###
 
+# There are two options for mapping over basemaps
+# Option 1 - ggmap 
 # Now we overlay these polygons onto the chosen basemap using the geom_sf() function
 ggmap(myMap) +
   geom_sf(data = Datazone_culter, aes(fill=as.factor(TotPop2011)), inherit.aes = FALSE) +
@@ -91,5 +96,22 @@ ggmap(myMap) +
   coord_sf(crs = st_crs(4326)) + # This is essential to convert CRS to WGS84
   labs(x = 'Longitude', y = 'Latitude', fill = 'Tot Pop 2011') + 
   ggtitle('TotPop2011') 
+# geom_sf has a wide range of style arguments to customise your output
 
+# Option 2 - leaflet
+# Once again, we must convert CRS to WGS84 but this time using st_transform() from the sf package
+Datazone_culter <- st_transform(Datazone_culter, '+proj=longlat +datum=WGS84')
 
+# From here on, it is much the same as using leaflet with our rgdal example
+leaflet(Datazone_culter) %>%
+  setView(lng = -2.27, lat = 57.1, zoom = 11) %>%
+  addProviderTiles("CartoDB.Positron", layerId = "basetile",options = providerTileOptions(minZoom = 6)) %>%
+  addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+              opacity = 1.0, fillOpacity = 0.5,
+              fillColor = ~colorQuantile("PuBu", TotPop2011)(TotPop2011),
+              highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                  bringToFront = TRUE),
+              label=~paste(Datazone_culter$Name),
+              labelOptions = labelOptions(textsize = "15px",
+                                          direction = "auto"))
+  
