@@ -103,6 +103,8 @@ ggmap(myMap) +
 Datazone_culter <- st_transform(Datazone_culter, '+proj=longlat +datum=WGS84')
 
 # From here on, it is much the same as using leaflet with our rgdal example
+bins <- c(0, 500, 550, 600, 650, 700, 750, 800, Inf)
+
 leaflet(Datazone_culter) %>%
   setView(lng = -2.27, lat = 57.1, zoom = 11) %>%
   addProviderTiles("CartoDB.Positron", layerId = "basetile",options = providerTileOptions(minZoom = 6)) %>%
@@ -113,5 +115,11 @@ leaflet(Datazone_culter) %>%
                                                   bringToFront = TRUE),
               label=~paste(Datazone_culter$Name),
               labelOptions = labelOptions(textsize = "15px",
-                                          direction = "auto"))
+                                          direction = "auto")) %>%
+  addLegend(pal = colorBin("PuBu", domain = Datazone_culter$TotPop2011, bins = bins),
+            values = ~n,
+            opacity = 0.7,
+            title = 'Total Population 2011',
+            position = "bottomright") 
+  
   
