@@ -5,10 +5,10 @@ library(leaflet)
 library(data.table)
 library(RColorBrewer)
 
-### Stage 01 - Collecting map geography polygons ###
+### Stage 01 - Collecting Geography Polygons ###
 
-# You must now obtain a shapefile that contains the polygon shapes of your chosen geography .
-# For the purposes of this tutorial, we will be looking at the datazone level.
+# You must now obtain a shapefile that contains the polygon shapes of your chosen geography / boundaries.
+# For the purposes of this tutorial, we will be looking at the government datazone level.
 
 # For this, we require the geodatabase that contains the shapefiles of datazones. This can be found at:
 # https://data.gov.uk/dataset/ab9f1f20-3b7f-4efa-9bd2-239acf63b540/data-zone-boundaries-2011
@@ -54,7 +54,9 @@ plot(Datazone_culter['TotPop2011'], pal=brewer.pal(7, "PuBu"))
 
 ### Stage 03 - Collecting Basemaps ###
 
-# In order to bring in basemaps and pass sf objects to it, you will need a google maps Geocoding API and Static Maps API key
+# If you wish to use leaflet for visualising your maps and polygons then you may skip this stage as leaflet has access to a library of basemaps already (skip to stage 4 - 02)
+
+# If you wish to use ggmap for display then you will need a google maps Geocoding API and Static Maps API key and import your basemaps from there
 # Guidance to obtaining this can be found at: https://cloud.google.com/docs/authentication/api-keys#securing_an_api_key
 # Once you have a key, add it to your r environ with register_google(key = 'your key')
 
@@ -89,6 +91,7 @@ myMap <- get_map(location =  c(lon = -2.27, lat = 57.1), zoom = 11,
 
 # There are two options for mapping over basemaps
 # Option 1 - ggmap 
+
 # Now we overlay these polygons onto the chosen basemap using the geom_sf() function
 ggmap(myMap) +
   geom_sf(data = Datazone_culter, aes(fill=as.factor(TotPop2011)), inherit.aes = FALSE) +
@@ -103,14 +106,14 @@ ggmap(myMap) +
 Datazone_culter <- st_transform(Datazone_culter, '+proj=longlat +datum=WGS84')
 
 # From here on, it is much the same as using leaflet with our rgdal example
-bins <- c(0, 500, 550, 600, 650, 700, 750, 800, Inf)
+bins <- c(0, 500, 550, 600, 650, 700, 750, 800, Inf) # leaflet does not auto calculate bins so we will need to manually enter them
 
 leaflet(Datazone_culter) %>%
   setView(lng = -2.27, lat = 57.1, zoom = 11) %>%
-  addProviderTiles("CartoDB.Positron", layerId = "basetile",options = providerTileOptions(minZoom = 6)) %>%
+  addProviderTiles("CartoDB.Positron", layerId = "basetile",options = providerTileOptions(minZoom = 6)) %>% # Here you choose your provider basemap
   addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
               opacity = 1.0, fillOpacity = 0.5,
-              fillColor = ~colorQuantile("PuBu", TotPop2011)(TotPop2011),
+              fillColor = ~colorQuantile("PuBu", TotPop2011)(TotPop2011), # Choose colour using rcolorbrewer or viridis
               highlightOptions = highlightOptions(color = "white", weight = 2,
                                                   bringToFront = TRUE),
               label=~paste(Datazone_culter$Name),
