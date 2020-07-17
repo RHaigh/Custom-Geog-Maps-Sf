@@ -1,5 +1,5 @@
 # Custom Geography Maps in R
-A guide for analysts to quickly create customised maps in pdf or png format without requiring licensed mapping software using the sf and ggmap packages. 
+A guide for analysts to quickly create customised maps in pdf or png format without requiring licensed mapping software using the sf, leaflet and ggmap packages. 
 
 Author: Richard Haigh
 
@@ -18,6 +18,7 @@ This is intended to be a guide for analysts and statisticians with a mid-level k
 
 You can use this with an existing dataset providing it has a breakdown of your chosen geography level. You must also have access to the software stated above.
 
-Using this guide, you can quickly create ouptut such as this without using any licensed mapping software, such as QGIS, FME or ArcMap:
+Using this guide, you can quickly and simply create ouptut such as this without using any licensed mapping software, such as QGIS, FME or ArcMap:
 
-
+![Example simple output](./sf_plot1.png)
+![Example simple output](./sf_plot2.png)
