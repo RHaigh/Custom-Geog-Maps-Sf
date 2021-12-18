@@ -14,6 +14,7 @@ library(RColorBrewer)
 # https://data.gov.uk/dataset/ab9f1f20-3b7f-4efa-9bd2-239acf63b540/data-zone-boundaries-2011
 # Download this to your machine.
 path <- "http://sedsh127.sedsh.gov.uk/Atom_data/ScotGov/ZippedShapefiles/SG_DataZoneBdry_2011.zip"
+# If this were a project, you would save this file to a project folder. For simplicity, we will just grab it directly and place it in our temporary downloads. 
 
 # Load into temp file directory
 temp_shapefile <- tempfile()
