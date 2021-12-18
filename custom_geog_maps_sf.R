@@ -28,10 +28,10 @@ DataZone_sf <- sf::read_sf(file.path(temp_dir,'SG_DataZone_Bdry_2011.shp'))
 
 ### Stage 02 - Mapping Polygons ###
 
-# Sf has several advantages over the rgdal approach also shown in this repository
+# Sf has several advantages over the rgdal approach shown in another repository
 # Most importantly, it can be plotted easily at this stage using the plot() function
 
-# We will deminstrate this by filtering our dataframe of datazones for those that are within a certain council area
+# We will demonstrate this by filtering our dataframe of datazones for those that are within a certain council area
 Datazone_culter <- dplyr::filter(DataZone_sf, Name %like% 'Culter')
 
 # We then call plot and tell it to shade these polygons by a given column
